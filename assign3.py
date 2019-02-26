@@ -23,9 +23,12 @@ def readF(tempPin):
 	return tempFahr
 
 try:
-	while t == 1:
-		data = readF(tempPin)
-		print (data)
+	with open("/log/templog.csv", "a") as log
+		while t == 1:
+			data = readF(tempPin)
+			print (data)
+			time.sleep(60)
+			log.write("str(data)")
 
 except KeyboardInterrupt:
 	os.system('clear')
