@@ -39,11 +39,8 @@ while True:
 	if temperature > 68  and temperature < 78:
 		green(22)
 	else:
-		count = 60
-		while count > 0:
+		for i in range(60):
 			red(27)
-			count = count-1
-	count = 0
 	GPIO.output(redPin,False)
 	GPIO.output(greenPin,False)
 
