@@ -8,7 +8,7 @@ import sys
 
 con = None
 try:
-	con = mydb.connect('test.db')
+	con = mydb.connect('timeTemp')
 	cur = con.cursor()
 	cur.execute('SELECT SQLITE_VERSION()')
 	data = cur.fetchone()
@@ -42,29 +42,30 @@ def red(pin):
 	time.sleep(.5)
 
 #temp and humidity sensor
-tempSensor = Adafruit_DHT.DHT11
+tempSensor = Adafruit_DHT.DHT22
 try:
-	while True:
-        	humidity, temperature = Adafruit_DHT.read_retry(tempSensor,tempPin)
-        	temperature = temperature * 9/5.0 +32
-		c.execute('''$temp''')
-        	if humidity is not None and temperature is not None:
-#       	        tempFahr = '{0:0/1f}*F'.format(temperature)
-        	        print('Temperature = {0:0.1f}*F'.format(temperature, humidity))
-        	else:
-        	        print('Failed to get reading. Try again!')
-		if temperature > 68  and temperature < 78:
-			green(22)
-		else:
-			for i in range(60):
-				red(27)
-		GPIO.output(redPin,False)
-		GPIO.output(greenPin,False)
-		clear()
+	with open("log/tempLog.csv", "a") as log:
+		while True:
+        		humidity, temperature = Adafruit_DHT.read_retry(tempSensor,tempPin)
+        		temperature = temperature * 9/5.0 +32
+                        log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"), str(temperature)))
+			# con.execute(' ''INSERT INTO temp VALUES ('$temperature')''')
+			con.execute("INSERT INTO temp VALUES ('" + str(temperature) + "');")
+			con.commit()
+        		if humidity is not None and temperature is not None:
+#				tempFahr = '{0:0/1f}*F'.format(temperature)
+        		        print('Temperature = {0:0.1f}*F'.format(temperature, humidity))
+        		else:
+        		        print('Failed to get reading. Try again!')
+			if temperature > 68  and temperature < 78:
+				green(22)
+			else:
+				for i in range(60):
+					red(27)
+			GPIO.output(redPin,False)
+			GPIO.output(greenPin,False)
 
 except KeyboardInterrupt:
-	if con:
-		con.close()
 	GPIO.cleanup()
-	os.system('clear')
+	con.close()
 	print('End of Temperature gathering.')
