@@ -7,7 +7,7 @@ import sys
 
 con = None
 try:
-        con = mydb.connect('')
+        con = mydb.connect('room.db')
         cur = con.cursor()
         cur.execute('SELECT SQLITE_VERSION()')
         data = cur.fetchone()
@@ -26,21 +26,29 @@ GPIO.setup(camPin1, GPIO.IN)
 GPIO.setup(camPin2, GPIO.IN)
 #let the camera have time to set up
 time.sleep(10)
+print "test starting now"
+people = 0
 try:
 	while True:
 		current = people
                 if GPIO.input(camPin1):
 			people = people + 1
-			time.sleep(2)
+			time.sleep(4)
+			print current
 		if GPIO.input(camPin2):
 			people = people - 1
-			time.sleep(2)
+			time.sleep(4)
+			print current
 		#decrease in room population
 		if current > people:
 			current = current
+                        con.execute("INSERT INTO room VALUES ('now', 'leaving' , people);")
+
 		#increase in room population
 		if current < people:
-			current = current
+			con.execute("INSERT INTO room VALUES ('now', 'entering' , 'people');")
+                        con.commit()
+
 
 except KeyboardInterrupt:
         GPIO.cleanup()
