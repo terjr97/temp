@@ -28,6 +28,8 @@ GPIO.setup(camPin2, GPIO.IN)
 #time.sleep(10)
 print "test starting now"
 people = 0
+entering = "entering"
+leaving = "leaving"
 try:
 	while True:
 		now = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -42,11 +44,11 @@ try:
 		#decrease in room population
 		if current > people:
 			current = current
-                        con.execute("INSERT INTO room VALUES ('+time+','leaving','"+peeps+"'")
+                        con.execute('INSERT INTO motion VALUES (?,?,?)', (now,entering,peeps))
 			con.commit()
 		#increase in room population
 		if current < people:
-                        con.execute("INSERT INTO room VALUES ('+time+','entering','"+peeps+"'")
+                        con.execute('INSERT INTO motion VALUES (?,?,?)', (now,leaving,peeps))
                         con.commit()
 
 
