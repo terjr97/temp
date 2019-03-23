@@ -25,7 +25,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(camPin1, GPIO.IN)
 GPIO.setup(camPin2, GPIO.IN)
 #let the camera have time to set up
-#time.sleep(10)
+time.sleep(10)
 print "test starting now"
 people = 0
 entering = "entering"
