@@ -44,11 +44,11 @@ try:
 		#decrease in room population
 		if current > people:
 			current = current
-                        con.execute('INSERT INTO motion VALUES (?,?,?)', (now,entering,peeps))
+                        con.execute('INSERT INTO room  VALUES (?,?,?)', (now,entering,peeps))
 			con.commit()
 		#increase in room population
 		if current < people:
-                        con.execute('INSERT INTO motion VALUES (?,?,?)', (now,leaving,peeps))
+                        con.execute('INSERT INTO room VALUES (?,?,?)', (now,leaving,peeps))
                         con.commit()
 
 

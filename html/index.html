@@ -1,0 +1,72 @@
+<html>
+
+	<head>
+		<title>People in Room</title>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	</head>
+
+	<body onload="go()">
+
+		<center>
+			<div id="curve_chart"style="width: 1200px; height: 600px"></div>
+			<div id="table_div"style="width: 1200px; height: 600px"></div>
+		</center>
+
+		<script type='text/javascript'>
+			google.charts.load('current', {packages:['table']});
+			google.charts.load('current', { packages: ['corechart'] });
+			var chartData = [];
+			var tableData = [];
+			function go(){
+				getData();
+				setInterval(function() {
+					getData();
+				}, 60000);
+			}
+			function getData(){
+				chartData = [];
+				tableData = [];
+				$.getJSON('/cgi-bin/data.py', function(chartJSON) {
+					for (i = 0; i < chartJSON.length; i++){
+						chartData.push([new Date(chartJSON[i].time), chartJSON[i].people]);
+						tableData.push([new Date(chartJSON[i].time), chartJSON[i].state, chartJSON[i].people]);
+					};
+					drawChart();
+					drawTable();
+				});
+			}
+
+
+		        function drawChart() {
+						var gdata = new google.visualization.DataTable();
+						gdata.addColumn('date', 'Date');
+						gdata.addColumn('number', 'People');
+						gdata.addRows(chartData);
+						var options = {
+	            			title: 'People in Room',
+	            			curveType: 'function',
+	            			legend: { position: 'bottom' }
+	        			};
+	        			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+	        			chart.draw(gdata, options);
+			}
+
+	                function drawTable() {
+						var tdata = new google.visualization.DataTable();
+        					tdata.addColumn('datetime', 'time');
+        					tdata.addColumn('string', 'status');
+        					tdata.addColumn('number', 'people');
+						tdata.addRows(tableData);
+					        var table = new google.visualization.Table(document.getElementById('table_div'));
+       						table.draw(tdata, {showRowNumber: true, width: '100%', height: '100%'});
+
+                        }	
+
+		</script>
+
+
+	</body>
+
+</html>
