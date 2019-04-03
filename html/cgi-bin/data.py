@@ -14,7 +14,7 @@ cur.execute("SELECT * FROM (SELECT * FROM room ORDER BY time DESC LIMIT 10) ORDE
 dataset = cur.fetchall()
 chartJSON = []
 for row in dataset:
-	chartJSON.append({"time": row[0], "people": float(row[2])})
+	chartJSON.append({"time": row[0], "state": row[1],"people": float(row[2])})
 print(json.dumps(chartJSON))
 con.close()
 exit(0)
